@@ -1,5 +1,5 @@
 import express from 'express';
-import peopleController from '../controllers/peoplesController';
+import peopleController from '../controllers/peopleController';
 import bodyParser from 'body-parser';
 
 const app = express();
