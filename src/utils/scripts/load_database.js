@@ -7,7 +7,50 @@ async function main() {
             gender: 'Masculino',
             dateOfBirth: '21/01/2002',
             maritalStatus: 'Solteiro',
-            address: 'Joinville',
+            addresses: [
+                {
+                    cep: '54767160',
+                    street: 'Rua são bernardo do campo',
+                    city: 'Jandira',
+                    state: 'São Paulo',
+                    country: 'Brasil',
+                },
+                {
+                    cep: '06622200',
+                    street: 'Rua são bernardo do campo',
+                    city: 'Jandira',
+                    state: 'São Paulo',
+                    country: 'Brasil',
+                },
+                {
+                    cep: '54767160',
+                    street: 'Rua são bernardo do campo',
+                    city: 'Jandira',
+                    state: 'São Paulo',
+                    country: 'Brasil',
+                },
+                {
+                    cep: '06622200',
+                    street: 'Rua são bernardo do campo',
+                    city: 'Jandira',
+                    state: 'São Paulo',
+                    country: 'Brasil',
+                },
+                {
+                    cep: '54767160',
+                    street: 'Rua são bernardo do campo',
+                    city: 'Jandira',
+                    state: 'São Paulo',
+                    country: 'Brasil',
+                },
+                {
+                    cep: '06622200',
+                    street: 'Rua são bernardo do campo',
+                    city: 'Jandira',
+                    state: 'São Paulo',
+                    country: 'Brasil',
+                },
+            ],
         });
     }
 }
