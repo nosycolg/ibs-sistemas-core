@@ -1,18 +1,23 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
 
+/**
+ *
+ * @param {import('sequelize').Sequelize} sequelize
+ * @param {import('sequelize')} Sequelize
+ * @returns
+ */
 function UserModel(sequelize) {
-    const User = sequelize.define('user',
-        {
-            username: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            password: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-        });
+    const User = sequelize.define('user', {
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+    });
 
     User.encryptPassword = function (password) {
         // eslint-disable-next-line no-sync

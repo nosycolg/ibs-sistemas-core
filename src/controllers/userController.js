@@ -8,7 +8,7 @@ class UserController {
      */
     async getUser(req, res) {
         try {
-            const users = await db.User.User.findAll();
+            const users = await db.User.findAll();
             return res.json(users);
         } catch (err) {
             return res.status(500).json({ message: 'Aconteceu algo inesperado' });
@@ -22,7 +22,7 @@ class UserController {
      */
     async getUserById(req, res) {
         try {
-            const user = await db.User.User.findOne({
+            const user = await db.User.findOne({
                 where: { id: req.params.id },
             });
             if (user) {
@@ -53,8 +53,8 @@ class UserController {
                 return res.sendStatus(400);
             }
 
-            const user = await db.User.User.findByPk(id);
-            const userExists = await db.User.User.findOne({ where: { username } });
+            const user = await db.User.findByPk(id);
+            const userExists = await db.User.findOne({ where: { username } });
 
             if (!user) {
                 return res.status(404).json({ message: 'Usuário inexistente!' });
@@ -81,7 +81,7 @@ class UserController {
      */
     async deleteUser(req, res) {
         try {
-            const user = await db.User.User.findOne({
+            const user = await db.User.findOne({
                 where: { id: req.params.id },
             });
             if (!user) {
@@ -94,6 +94,7 @@ class UserController {
             return res.status(500).json({ message: 'Aconteceu algo inesperado' });
         }
     }
+
 }
 
 module.exports = new UserController();

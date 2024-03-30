@@ -1,5 +1,11 @@
 const { DataTypes } = require('sequelize');
 
+/**
+ *
+ * @param {import('sequelize').Sequelize} sequelize
+ * @param {import('sequelize')} Sequelize
+ * @returns
+ */
 function PeopleModel(sequelize) {
     const People = sequelize.define('people', {
         name: {
@@ -17,28 +23,6 @@ function PeopleModel(sequelize) {
         maritalStatus: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        addresses: {
-            type: DataTypes.JSON,
-            allowNull: false,
-            validate: {
-                isValidAddress(value) {
-                    if (!Array.isArray(value)) {
-                        throw new Error('O campo addresses deve ser um array!');
-                    }
-
-                    for (const address of value) {
-                        const keys = Object.keys(address);
-                        const requiredKeys = ['cep', 'street', 'city', 'state', 'country'];
-
-                        for (const key of keys) {
-                            if (!requiredKeys.includes(key)) {
-                                throw new Error(`A chave '${key}' não é permitida em um endereço`);
-                            }
-                        }
-                    }
-                },
-            },
         },
     });
 

@@ -1,6 +1,5 @@
 const { db } = require('../database');
 const jwt = require('jsonwebtoken');
-const moment = require('moment');
 require('dotenv').config();
 
 class AuthService {
@@ -14,18 +13,18 @@ class AuthService {
             const { username, password } = req.body;
 
             if (!username || !password) {
-                return res.status(409).json({ message: 'Nome de usuário e senha em falta!' });
+                return res.status(404).json({ message: 'Nome de usuário e senha em falta!' });
             }
 
             const userExists = await db.User.findOne({ where: { username } });
 
             if (userExists) {
-                return res.status(409).json({ message: 'Nome de usuário já existente!' });
+                return res.status(404).json({ message: 'Nome de usuário já existente!' });
             }
 
             const passwordValidate = await db.User.passwordValidate(password);
             if (!passwordValidate) {
-                return res.status(400).json({ message: "Missing password requirements" });
+                return res.status(409).json({ message: 'Missing password requirements' });
             }
 
             const passwordHashed = db.User.encryptPassword(password);
@@ -62,39 +61,12 @@ class AuthService {
             if (!validatePassword) {
                 return res.status(404).json({ success: false });
             }
-            // await lResCleaner(user.dataValues);
 
-            const sessionExists = await db.Session.findOne({
-                where: {
-                    userId: user.id,
-                },
-            });
+            const token = jwt.sign({ id: user.id }, String(process.env.JWT_SECRET_KEY), { expiresIn: '1d' });
 
-            if (sessionExists) {
-                await db.Session.destroy({
-                    where: {
-                        userId: user.id,
-                    },
-                });
-                const session = await db.Session.create({
-                    expiration_date: moment().add(3, 'day').valueOf(),
-                    jwt: null,
-                });
-                session.setUser(user);
-                await session.save();
+            user.dataValues.token = token;
+            delete user.dataValues.password;
 
-                user.dataValues.token = session.sessionId;
-                return res.json(user);
-            }
-
-            const newSession = await db.Session.create({
-                expiration_date: moment().add(3, 'day').valueOf(),
-                jwt: null,
-            });
-            newSession.setUser(user);
-            await newSession.save();
-
-            user.dataValues.token = newSession.sessionId;
             return res.json(user);
         } catch (err) {
             return res.status(500).json(err);
@@ -115,68 +87,27 @@ class AuthService {
         }
 
         const token = authorization.replace('Bearer', '').trim();
-        const tokenLength = token.length;
 
-        if (tokenLength <= 36) {
-            try {
-                const data = await db.Session.findOne({
-                    where: {
-                        expiration_date: db.sequelize.literal('expiration_date > NOW()'),
-                        sessionId: token,
-                    },
-                });
+        try {
+            const data = jwt.verify(token, String(process.env.JWT_SECRET_KEY));
 
-                if (!data) {
-                    return res.status(401).json({ error: 'Invalid sessionId.' });
-                }
+            const { id } = data;
 
-                const user = await db.User.findOne({
-                    where: { id: data.UserId },
-                    attributes: {
-                        exclude: ['password'],
-                    },
-                    include: {
-                        model: db.Permissions,
-                        attributes: {
-                            exclude: ['createdAt', 'updatedAt', 'id'],
-                        },
-                    },
-                });
-                if (!user) {
-                    throw new Error('User not found');
-                }
-
-                req.user = user;
-                req.userId = user.id;
-                req.is_master_admin = user.Permission.master_admin_level;
-
-                return next();
-            } catch (err) {
-                return res.sendStatus(401);
+            const user = await db.User.findOne({
+                where: { id: id },
+            });
+            if (!user) {
+                throw new Error('User not found');
             }
-        } else {
-            try {
-                const data = jwt.verify(token, String(process.env.JWT_SECRET_KEY));
 
-                const { id } = data;
+            delete user.dataValues.password;
 
-                const user = await db.User.findOne({
-                    where: { id: id },
-                });
-                if (!user) {
-                    throw new Error('User not found');
-                }
+            req.user = user;
+            req.userId = id;
 
-                delete user.dataValues.password;
-
-                req.user = user;
-                req.userId = id;
-                req.is_master_admin = user.Permission.master_admin_level;
-
-                return next();
-            } catch (err) {
-                return res.sendStatus(401);
-            }
+            return next();
+        } catch (err) {
+            return res.status(401).json(err);
         }
     }
 }

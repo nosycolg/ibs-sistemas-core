@@ -1,57 +1,24 @@
-const { db, sequelize } = require('../../database');
+const { db } = require('../../database');
 async function main() {
-    await sequelize.sync({ force: true });
     for (let i = 0; i < 10; i++) {
-        await db.People.create({
-            name: `Teste ${i}`,
+        const person = await db.People.create({
+            name: `Cristhian Felipe da Silva ${i}`,
             gender: 'Masculino',
             dateOfBirth: '21/01/2002',
             maritalStatus: 'Solteiro',
-            addresses: [
-                {
-                    cep: '54767160',
-                    street: 'Rua são bernardo do campo',
-                    city: 'Jandira',
-                    state: 'São Paulo',
-                    country: 'Brasil',
-                },
-                {
-                    cep: '06622200',
-                    street: 'Rua são bernardo do campo',
-                    city: 'Jandira',
-                    state: 'São Paulo',
-                    country: 'Brasil',
-                },
-                {
-                    cep: '54767160',
-                    street: 'Rua são bernardo do campo',
-                    city: 'Jandira',
-                    state: 'São Paulo',
-                    country: 'Brasil',
-                },
-                {
-                    cep: '06622200',
-                    street: 'Rua são bernardo do campo',
-                    city: 'Jandira',
-                    state: 'São Paulo',
-                    country: 'Brasil',
-                },
-                {
-                    cep: '54767160',
-                    street: 'Rua são bernardo do campo',
-                    city: 'Jandira',
-                    state: 'São Paulo',
-                    country: 'Brasil',
-                },
-                {
-                    cep: '06622200',
-                    street: 'Rua são bernardo do campo',
-                    city: 'Jandira',
-                    state: 'São Paulo',
-                    country: 'Brasil',
-                },
-            ],
         });
+
+        for (let i = 0; i < 10; i++) {
+            const address = await db.Address.create({
+                cep: '54767-160',
+                street: `Rua São Bernardo ${i}`,
+                city: 'Barueri',
+                state: 'São Paulo',
+                country: 'Brazil',
+            });
+
+            await address.setPerson(person);
+        }
     }
 }
 

@@ -1,7 +1,6 @@
 const { db } = require('../database');
 
 class PeopleController {
-
     /**
      *
      * @param {Request} req
@@ -9,8 +8,32 @@ class PeopleController {
      */
     async getPeople(req, res) {
         try {
-            const data = await db.People.findAll();
-            return res.json(data);
+            const query = req.query;
+            let page = query.page;
+            const maxResults = query.limit || 10;
+            const offset = page * maxResults;
+            if (page === '1') {
+                page = '0';
+            }
+
+            const data = await db.People.findAndCountAll({
+                offset: offset,
+                limit: maxResults,
+                include: {
+                    model: db.Address,
+                    attributes: {
+                        exclude: ['personId'],
+                    },
+                },
+            });
+
+            const pages = Math.ceil(data.count / maxResults);
+
+            return res.json({
+                page: page,
+                data: data.rows,
+                pages: pages
+            });
         } catch (err) {
             return res.sendStatus(500);
         }
