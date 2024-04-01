@@ -60,14 +60,13 @@ class PeopleController {
      */
     async createPerson(req, res) {
         try {
-            const { name, gender, dateOfBirth, maritalStatus, address } = req.body;
+            const { name, gender, dateOfBirth, maritalStatus } = req.body;
 
             const data = await db.People.create({
                 name,
                 gender,
                 dateOfBirth,
                 maritalStatus,
-                address,
             });
 
             return res.status(200).json(data);
@@ -83,26 +82,33 @@ class PeopleController {
      */
     async updatePerson(req, res) {
         try {
-            const { name, gender, dateOfBirth, maritalStatus, address } = req.body;
+            const { name, gender, dateOfBirth, maritalStatus } = req.body;
             const { id } = req.params;
 
             if (!id) {
-                return res.sendStatus(400);
+                return res.sendStatus(401);
             }
 
             const person = await db.People.findByPk(Number(id));
 
             if (!person) {
-                return res.sendStatus(400);
+                return res.sendStatus(404);
             }
 
-            const data = await person.update({
+            const data = {
                 name,
                 gender,
                 dateOfBirth,
                 maritalStatus,
-                address,
-            });
+            };
+
+            const requiredFields = ['name', 'gender', 'dateOfBirth', 'maritalStatus'];
+
+            if (requiredFields.every(field => data[field] === person.dataValues[field])) {
+                return res.sendStatus(400);
+            }
+
+            await person.update(data);
 
             return res.status(200).json(data);
         } catch (err) {

@@ -9,7 +9,6 @@ class AddressController {
     async insertAddress(req, res) {
         try {
             const { cep, street, streetNumber, district, city, state, country, complement } = req.body;
-            console.log(req.params.id);
             const person = await db.People.findOne({ where: { id: req.params.id } });
 
             if (!person) {
