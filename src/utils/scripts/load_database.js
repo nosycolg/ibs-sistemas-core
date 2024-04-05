@@ -3,17 +3,19 @@ async function main() {
     for (let i = 0; i < 10; i++) {
         const person = await db.People.create({
             name: `Cristhian Felipe da Silva ${i}`,
-            gender: 'Masculino',
-            dateOfBirth: '21/01/2002',
-            maritalStatus: 'Solteiro',
+            gender: 'MALE',
+            dateOfBirth: '2002-01-21',
+            maritalStatus: 'DIVORCED',
         });
 
         for (let i = 0; i < 10; i++) {
             const address = await db.Address.create({
-                cep: '54767-160',
+                cep: '06622-200',
                 street: `Rua São Bernardo ${i}`,
+                streetNumber: 420,
+                district: 'Parque Santa Tereza',
                 city: 'Barueri',
-                state: 'São Paulo',
+                state: 'SP',
                 country: 'Brazil',
             });
 

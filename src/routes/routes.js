@@ -28,6 +28,7 @@ exports.init = function (app, auth) {
 
     // Addresses Controller
     app.post('/address/:id', auth.sessionOrJwt, addressController.insertAddress);
+    app.put('/address/:id', auth.sessionOrJwt, addressController.updateAddress);
     app.get('/address/:id', auth.sessionOrJwt, addressController.getAddresses);
     app.delete('/address/:id', auth.sessionOrJwt, addressController.deleteAddress);
 };

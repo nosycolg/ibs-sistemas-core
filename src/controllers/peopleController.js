@@ -1,4 +1,5 @@
 const { db } = require('../database');
+const { Op } = require('sequelize');
 
 class PeopleController {
     /**
@@ -8,15 +9,23 @@ class PeopleController {
      */
     async getPeople(req, res) {
         try {
-            const query = req.query;
-            let page = query.page;
-            const maxResults = query.limit || 10;
-            const offset = page * maxResults;
-            if (page === '1') {
-                page = '0';
+            const params = req.query;
+            const maxResults = params.limit ? Number(params.limit) : 10;
+            const offset = params.page ? (Number(params.page) - 1) * maxResults : 0;
+
+            const whereClause = {};
+
+            if (params.category && params.search) {
+                const category = params.category.toLowerCase();
+                const searchValue = params.search.toLowerCase();
+                if (params.category === 'name') {
+                    whereClause[category] = { [Op.like]: `%${searchValue}%` };
+                } else {
+                    whereClause[category] = searchValue;
+                }
             }
 
-            const data = await db.People.findAndCountAll({
+            const queryObj = {
                 offset: offset,
                 limit: maxResults,
                 include: {
@@ -25,17 +34,21 @@ class PeopleController {
                         exclude: ['personId'],
                     },
                 },
-            });
+                where: whereClause,
+            };
 
-            const pages = Math.ceil(data.count / maxResults);
+            const threads = await db.People.findAll(queryObj);
+            const count = await db.People.count();
 
-            return res.json({
-                page: page,
-                data: data.rows,
-                pages: pages
+            return res.status(200).json({
+                total: count,
+                max_results: maxResults,
+                page: Number(params.page),
+                pages: Math.ceil(count / maxResults),
+                results: threads,
             });
         } catch (err) {
-            return res.sendStatus(500);
+            return res.status(500).json(err);
         }
     }
 
@@ -104,7 +117,7 @@ class PeopleController {
 
             const requiredFields = ['name', 'gender', 'dateOfBirth', 'maritalStatus'];
 
-            if (requiredFields.every(field => data[field] === person.dataValues[field])) {
+            if (requiredFields.every((field) => data[field] === person.dataValues[field])) {
                 return res.sendStatus(400);
             }
 
