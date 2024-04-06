@@ -85,6 +85,10 @@ class AddressController {
                 return res.status(404).send(console.log('Pessoa não existe!'));
             }
 
+            if (!cep || !street || !streetNumber || !district || !city || !state || !country) {
+                return res.status(400).send({ message: 'Complete todas as fields' });
+            }
+
             const address = await db.Address.create({
                 cep: cep,
                 street: street,
@@ -116,7 +120,22 @@ class AddressController {
             const address = await db.Address.findByPk(req.params.id);
 
             if (!address) {
-                return res.status(404).send(console.log('Endereço não existe'));
+                return res.status(404).send({ message: 'Endereço não existe' });
+            }
+
+            if (!cep || !street || !streetNumber || !district || !city || !state || !country) {
+                return res.status(400).send({ message: 'Complete todas as fields' });
+            }
+
+            if (cep === address.cep &&
+                street === address.street &&
+                streetNumber === address.streetNumber &&
+                district === address.district &&
+                city === address.city &&
+                state === address.state &&
+                country === address.country &&
+                complement === address.complement) {
+                return res.status(404).send({ message: 'Dados não alterados' });
             }
 
             const data = {
@@ -151,7 +170,7 @@ class AddressController {
             });
 
             if (!address) {
-                return res.sendStatus(404);
+                return res.status(404).status({ message: 'Endereço não existe' });
             }
 
             address.destroy({});

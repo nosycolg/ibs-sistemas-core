@@ -81,7 +81,7 @@ class AuthService {
      * @param {Response} req
      * @param {import('express').NextFunction} next
      */
-    async sessionOrJwt(req, res, next) {
+    async jwt(req, res, next) {
         const { authorization } = req.headers;
 
         if (!authorization) {

@@ -109,16 +109,16 @@ class PeopleController {
                 return res.sendStatus(404);
             }
 
+            if (!name || !gender || !dateOfBirth || !maritalStatus) {
+                return res.sendStatus(400);
+            }
+
             const data = {
                 name,
                 gender,
                 dateOfBirth,
                 maritalStatus,
             };
-
-            if (!name || !gender || !dateOfBirth || !maritalStatus) {
-                return res.sendStatus(400);
-            }
 
             await person.update(data);
 

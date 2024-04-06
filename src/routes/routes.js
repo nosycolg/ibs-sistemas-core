@@ -14,22 +14,23 @@ exports.init = function (app, auth) {
     app.post('/register', auth.register);
 
     // User Controller
-    app.get('/users', auth.sessionOrJwt, userController.getUser);
-    app.get('/users/:id', auth.sessionOrJwt, userController.getUserById);
-    app.put('/users/:id', auth.sessionOrJwt, userController.updateUser);
-    app.delete('/users/:id', auth.sessionOrJwt, userController.deleteUser);
+    app.get('/users', auth.jwt, userController.getUsers);
+    app.get('/data/user', auth.jwt, userController.getUserData);
+    app.get('/users/:id', auth.jwt, userController.getUserById);
+    app.put('/users/:id', auth.jwt, userController.updateUser);
+    app.delete('/users/:id', auth.jwt, userController.deleteUser);
 
     // People Controller
     app.get('/people', peopleController.getPeople);
-    app.get('/person/:id', auth.sessionOrJwt, peopleController.getPersonById);
-    app.post('/person', auth.sessionOrJwt, peopleController.createPerson);
-    app.put('/person/:id', auth.sessionOrJwt, peopleController.updatePerson);
-    app.delete('/person/:id', auth.sessionOrJwt, peopleController.deletePerson);
+    app.get('/person/:id', auth.jwt, peopleController.getPersonById);
+    app.post('/person', auth.jwt, peopleController.createPerson);
+    app.put('/person/:id', auth.jwt, peopleController.updatePerson);
+    app.delete('/person/:id', auth.jwt, peopleController.deletePerson);
 
     // Addresses Controller
-    app.get('/addresses/:id', auth.sessionOrJwt, addressController.getAddresses);
-    app.get('/address/:id', auth.sessionOrJwt, addressController.getAddressById);
-    app.post('/address/:id', auth.sessionOrJwt, addressController.insertAddress);
-    app.put('/address/:id', auth.sessionOrJwt, addressController.updateAddress);
-    app.delete('/address/:id', auth.sessionOrJwt, addressController.deleteAddress);
+    app.get('/addresses/:id', auth.jwt, addressController.getAddresses);
+    app.get('/address/:id', auth.jwt, addressController.getAddressById);
+    app.post('/address/:id', auth.jwt, addressController.insertAddress);
+    app.put('/address/:id', auth.jwt, addressController.updateAddress);
+    app.delete('/address/:id', auth.jwt, addressController.deleteAddress);
 };
