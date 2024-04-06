@@ -11,6 +11,7 @@ class UserController {
             const users = await db.User.findAll();
             return res.json(users);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json({ message: 'Aconteceu algo inesperado' });
         }
     }
@@ -30,6 +31,7 @@ class UserController {
             }
             res.status(404).json({ message: 'Usuário não existe!' });
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json({ message: 'Aconteceu algo inesperado' });
         }
     }
@@ -49,10 +51,6 @@ class UserController {
 
             const { id } = req.params;
 
-            if (!id) {
-                return res.sendStatus(400);
-            }
-
             const user = await db.User.findByPk(id);
             const userExists = await db.User.findOne({ where: { username } });
 
@@ -70,6 +68,7 @@ class UserController {
 
             return res.json(data);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json({ message: 'Aconteceu algo inesperado' });
         }
     }
@@ -91,10 +90,10 @@ class UserController {
             await user.destroy();
             return res.json(user);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json({ message: 'Aconteceu algo inesperado' });
         }
     }
-
 }
 
 module.exports = new UserController();

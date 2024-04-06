@@ -48,6 +48,7 @@ class PeopleController {
                 results: threads,
             });
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json(err);
         }
     }
@@ -59,10 +60,14 @@ class PeopleController {
      */
     async getPersonById(req, res) {
         try {
-            const data = await db.People.findAll();
-            return res.json(data);
+            const person = await db.People.findByPk(Number(req.params.id));
+            if (!person) {
+                return res.status(404).json({ success: false });
+            }
+            return res.status(200).json(person);
         } catch (err) {
-            return res.sendStatus(500);
+            // istanbul ignore next
+            return res.status(500).json({ success: false });
         }
     }
 
@@ -84,6 +89,7 @@ class PeopleController {
 
             return res.status(200).json(data);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json(err);
         }
     }
@@ -96,13 +102,8 @@ class PeopleController {
     async updatePerson(req, res) {
         try {
             const { name, gender, dateOfBirth, maritalStatus } = req.body;
-            const { id } = req.params;
 
-            if (!id) {
-                return res.sendStatus(401);
-            }
-
-            const person = await db.People.findByPk(Number(id));
+            const person = await db.People.findByPk(Number(req.params.id));
 
             if (!person) {
                 return res.sendStatus(404);
@@ -115,9 +116,7 @@ class PeopleController {
                 maritalStatus,
             };
 
-            const requiredFields = ['name', 'gender', 'dateOfBirth', 'maritalStatus'];
-
-            if (requiredFields.every((field) => data[field] === person.dataValues[field])) {
+            if (!name || !gender || !dateOfBirth || !maritalStatus) {
                 return res.sendStatus(400);
             }
 
@@ -125,6 +124,7 @@ class PeopleController {
 
             return res.status(200).json(data);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json(err);
         }
     }
@@ -136,22 +136,17 @@ class PeopleController {
      */
     async deletePerson(req, res) {
         try {
-            const { id } = req.params;
-
-            if (!id) {
-                return res.sendStatus(400);
-            }
-
-            const person = await db.People.findByPk(Number(id));
+            const person = await db.People.findByPk(Number(req.params.id));
 
             if (!person) {
-                return res.sendStatus(400);
+                return res.sendStatus(404);
             }
 
             const data = await person.destroy();
 
             return res.status(200).json(data);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json(err);
         }
     }

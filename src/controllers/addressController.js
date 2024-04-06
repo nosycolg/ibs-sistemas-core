@@ -7,72 +7,6 @@ class AddressController {
      * @param {Request} req
      * @param {Response} req
      */
-    async insertAddress(req, res) {
-        try {
-            const { cep, street, streetNumber, district, city, state, country, complement } = req.body;
-            const person = await db.People.findOne({ where: { id: req.params.id } });
-
-            if (!person) {
-                return res.status(404).send(console.log('teste'));
-            }
-
-            const address = await db.Address.create({
-                cep: cep,
-                street: street,
-                streetNumber: streetNumber,
-                district: district,
-                city: city,
-                state: state,
-                country: country,
-                complement: complement,
-            });
-
-            await address.setPerson(person);
-
-            return res.sendStatus(200);
-        } catch (err) {
-            return res.status(500).json(err);
-        }
-    }
-
-    /**
-     *
-     * @param {Request} req
-     * @param {Response} req
-     */
-    async updateAddress(req, res) {
-        try {
-            const { cep, street, streetNumber, district, city, state, country, complement } = req.body;
-            const address = await db.Address.findByPk(req.params.id);
-
-            if (!address) {
-                return res.status(404).send(console.log('teste'));
-            }
-
-            const data = {
-                cep,
-                street,
-                streetNumber,
-                district,
-                city,
-                state,
-                country,
-                complement,
-            };
-
-            await address.update(data);
-
-            return res.status(200).json(data);
-        } catch (err) {
-            return res.status(500).json(err);
-        }
-    }
-
-    /**
-     *
-     * @param {Request} req
-     * @param {Response} req
-     */
     async getAddresses(req, res) {
         try {
             const params = req.query;
@@ -104,7 +38,7 @@ class AddressController {
             };
 
             const threads = await db.Address.findAll(queryObj);
-            const count = await db.Address.count({ where: whereClause});
+            const count = await db.Address.count({ where: whereClause });
 
             return res.status(200).json({
                 total: count,
@@ -114,6 +48,93 @@ class AddressController {
                 results: threads,
             });
         } catch (err) {
+            // istanbul ignore next
+            return res.status(500).json(err);
+        }
+    }
+
+    /**
+     *
+     * @param {Request} req
+     * @param {Response} req
+     */
+    async getAddressById(req, res) {
+        try {
+            const address = await db.Address.findByPk(Number(req.params.id));
+            if (!address) {
+                return res.status(404).json({ success: false });
+            }
+            return res.status(200).json(address);
+        } catch (err) {
+            // istanbul ignore next
+            return res.status(500).json({ success: false });
+        }
+    }
+
+    /**
+     *
+     * @param {Request} req
+     * @param {Response} req
+     */
+    async insertAddress(req, res) {
+        try {
+            const { cep, street, streetNumber, district, city, state, country, complement } = req.body;
+            const person = await db.People.findOne({ where: { id: req.params.id } });
+
+            if (!person) {
+                return res.status(404).send(console.log('Pessoa não existe!'));
+            }
+
+            const address = await db.Address.create({
+                cep: cep,
+                street: street,
+                streetNumber: streetNumber,
+                district: district,
+                city: city,
+                state: state,
+                country: country,
+                complement: complement,
+            });
+
+            await address.setPerson(person);
+
+            return res.status(200).json(address);
+        } catch (err) {
+            // istanbul ignore next
+            return res.status(500).json(err);
+        }
+    }
+
+    /**
+     *
+     * @param {Request} req
+     * @param {Response} req
+     */
+    async updateAddress(req, res) {
+        try {
+            const { cep, street, streetNumber, district, city, state, country, complement } = req.body;
+            const address = await db.Address.findByPk(req.params.id);
+
+            if (!address) {
+                return res.status(404).send(console.log('Endereço não existe'));
+            }
+
+            const data = {
+                cep,
+                street,
+                streetNumber,
+                district,
+                city,
+                state,
+                country,
+                complement,
+            };
+
+            await address.update(data);
+
+            return res.status(200).json(address);
+        } catch (err) {
+            // istanbul ignore next
             return res.status(500).json(err);
         }
     }
@@ -137,6 +158,7 @@ class AddressController {
 
             return res.sendStatus(200);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json(err);
         }
     }

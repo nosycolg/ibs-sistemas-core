@@ -35,6 +35,7 @@ class AuthService {
 
             return res.json(user);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json({ message: 'Aconteceu algo inesperado' + err });
         }
     }
@@ -69,6 +70,7 @@ class AuthService {
 
             return res.json(user);
         } catch (err) {
+            // istanbul ignore next
             return res.status(500).json(err);
         }
     }
@@ -107,6 +109,7 @@ class AuthService {
 
             return next();
         } catch (err) {
+            // istanbul ignore next
             return res.status(401).json(err);
         }
     }

@@ -20,15 +20,16 @@ exports.init = function (app, auth) {
     app.delete('/users/:id', auth.sessionOrJwt, userController.deleteUser);
 
     // People Controller
-    app.get('/person', auth.sessionOrJwt, peopleController.getPersonById);
     app.get('/people', peopleController.getPeople);
+    app.get('/person/:id', auth.sessionOrJwt, peopleController.getPersonById);
     app.post('/person', auth.sessionOrJwt, peopleController.createPerson);
     app.put('/person/:id', auth.sessionOrJwt, peopleController.updatePerson);
     app.delete('/person/:id', auth.sessionOrJwt, peopleController.deletePerson);
 
     // Addresses Controller
+    app.get('/addresses/:id', auth.sessionOrJwt, addressController.getAddresses);
+    app.get('/address/:id', auth.sessionOrJwt, addressController.getAddressById);
     app.post('/address/:id', auth.sessionOrJwt, addressController.insertAddress);
     app.put('/address/:id', auth.sessionOrJwt, addressController.updateAddress);
-    app.get('/address/:id', auth.sessionOrJwt, addressController.getAddresses);
     app.delete('/address/:id', auth.sessionOrJwt, addressController.deleteAddress);
 };
