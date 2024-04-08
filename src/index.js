@@ -31,7 +31,7 @@ async function start() {
         app.use(!disabled_logs ? logs : null);
         app.use(routes);
 
-        app.listen(9999);
+        app.listen(3000);
 
         console.log(logger.success('Connection established!'));
     } catch (err) {

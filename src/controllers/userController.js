@@ -6,44 +6,6 @@ class UserController {
      * @param {Request} req
      * @param {Response} req
      */
-    async getUserData(req, res) {
-        try {
-            const { authorization } = req.headers;
-
-            if (!authorization) {
-                return res.sendStatus(401);
-            }
-
-            const token = authorization.replace('Bearer', '').trim();
-
-            if (!token) {
-                return res.sendStatus(401);
-            }
-
-            const user = await db.User.findOne({
-                where: {
-                    id: req.userId,
-                },
-            });
-
-            if (!user) {
-                return res.status(404).json({ success: false });
-            }
-
-            user.dataValues.token = token;
-
-            return res.json(user);
-        } catch (err) {
-            console.error(err);
-            return res.status(401).json({ success: false });
-        }
-    }
-
-    /**
-     *
-     * @param {Request} req
-     * @param {Response} req
-     */
     async getUsers(req, res) {
         try {
             const users = await db.User.findAll();

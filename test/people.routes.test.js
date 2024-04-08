@@ -95,7 +95,7 @@ describe('people test', async () => {
         });
     });
 
-    it('get all people with params', async () => {
+    it('get all people with other params', async () => {
         res = await agent.get('/people?limit=10&page=1&category=gender&search=FEMALE');
         expect(res.statusCode).equals(200);
         expect(res.body.results).to.be.an('array').with.lengthOf(5);
@@ -307,10 +307,35 @@ describe('people test', async () => {
         });
     });
 
+    it('insert address without all required fields', async () => {
+        res = await agent.post('/address/' + personOneId).send({
+            cep: '06622-200',
+            streetNumber: 420,
+            district: 'Parque Santa Tereza',
+            city: 'Barueri',
+            state: 'SP',
+            country: 'Brazil',
+        });
+        expect(res.statusCode).equals(400);
+    });
+
     it('insert address in non-existent person', async () => {
         res = await agent.post('/address/' + -1).send({
             cep: '06622-200',
             street: 'Rua São Bernardo',
+            streetNumber: 420,
+            district: 'Parque Santa Tereza',
+            city: 'Barueri',
+            state: 'SP',
+            country: 'Brazil',
+        });
+        expect(res.statusCode).equals(404);
+    });
+
+    it('update address with same data', async () => {
+        res = await agent.put('/address/' + addressId).send({
+            cep: '06622-200',
+            street: 'Rua São Bernardo 0',
             streetNumber: 420,
             district: 'Parque Santa Tereza',
             city: 'Barueri',
@@ -346,6 +371,18 @@ describe('people test', async () => {
         });
     });
 
+    it('update address without one field', async () => {
+        res = await agent.put('/address/' + addressId).send({
+            cep: '06622-200',
+            street: 'TESTE',
+            streetNumber: 420,
+            city: 'TESTE',
+            state: 'SP',
+            country: 'Brazil',
+        });
+        expect(res.statusCode).equals(400);
+    });
+
     it('update non-existent address', async () => {
         res = await agent.put('/address/-1').send({
             cep: '06622-200',
@@ -376,7 +413,7 @@ describe('people test', async () => {
     });
 
     it('delete non-existent address', async () => {
-        res = await agent.delete('/address/' + -1).send();
+        res = await agent.delete('/address/-1').send();
         expect(res.statusCode).equals(404);
     });
 

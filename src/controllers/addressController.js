@@ -38,7 +38,7 @@ class AddressController {
             };
 
             const threads = await db.Address.findAll(queryObj);
-            const count = await db.Address.count({ where: whereClause });
+            const count = await db.Address.count();
 
             return res.status(200).json({
                 total: count,
@@ -127,14 +127,15 @@ class AddressController {
                 return res.status(400).send({ message: 'Complete todas as fields' });
             }
 
-            if (cep === address.cep &&
-                street === address.street &&
-                streetNumber === address.streetNumber &&
-                district === address.district &&
-                city === address.city &&
-                state === address.state &&
-                country === address.country &&
-                complement === address.complement) {
+            if (
+                cep == address.cep &&
+                street == address.street &&
+                streetNumber == address.streetNumber &&
+                district == address.district &&
+                city == address.city &&
+                state == address.state &&
+                country == address.country
+            ) {
                 return res.status(404).send({ message: 'Dados não alterados' });
             }
 
@@ -170,7 +171,7 @@ class AddressController {
             });
 
             if (!address) {
-                return res.status(404).status({ message: 'Endereço não existe' });
+                return res.status(404).json({ message: 'Endereço não existe' });
             }
 
             address.destroy({});

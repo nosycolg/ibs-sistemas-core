@@ -15,7 +15,6 @@ exports.init = function (app, auth) {
 
     // User Controller
     app.get('/users', auth.jwt, userController.getUsers);
-    app.get('/data/user', auth.jwt, userController.getUserData);
     app.get('/users/:id', auth.jwt, userController.getUserById);
     app.put('/users/:id', auth.jwt, userController.updateUser);
     app.delete('/users/:id', auth.jwt, userController.deleteUser);
@@ -28,7 +27,7 @@ exports.init = function (app, auth) {
     app.delete('/person/:id', auth.jwt, peopleController.deletePerson);
 
     // Addresses Controller
-    app.get('/addresses/:id', auth.jwt, addressController.getAddresses);
+    app.get('/addresses/:id', addressController.getAddresses);
     app.get('/address/:id', auth.jwt, addressController.getAddressById);
     app.post('/address/:id', auth.jwt, addressController.insertAddress);
     app.put('/address/:id', auth.jwt, addressController.updateAddress);
