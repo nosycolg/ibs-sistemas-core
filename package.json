@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "description": "ibs-sistemas-core",
     "scripts": {
-        "setup_test_environment": "docker run --rm --name baskappa -e MYSQL_ROOT_PASSWORD=root -d -p 3308:3308 mysql:8.0 && mysql --host=localhost --user=root --password=root --port 3308 --protocol=tcp -e \"create schema baskappa;\"",
         "load_database": "node ./src/utils/scripts/load_database.js",
         "coverage": "nyc --reporter=html --reporter=text --include='src/controllers/**' --include='src/middleware/authentication.js' mocha ./test/**.test.js --timeout 180000 --exit",
         "build": "npx tsc",
