@@ -38,7 +38,7 @@ class AddressController {
             };
 
             const threads = await db.Address.findAll(queryObj);
-            const count = await db.Address.count();
+            const count = await db.Address.count(queryObj);
 
             return res.status(200).json({
                 total: count,

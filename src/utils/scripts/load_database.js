@@ -3,6 +3,8 @@ const logger = require('../../services/logs.service');
 let addedUsers = 0;
 
 async function main() {
+    // Only for local tests
+
     // for (let i = 0; i < 10; i++) {
     //     const person = await db.People.create({
     //         name: `Cristhian Felipe da Silva ${i}`,
