@@ -62,12 +62,12 @@ class PeopleController {
         try {
             const person = await db.People.findByPk(Number(req.params.id));
             if (!person) {
-                return res.status(404).json({ success: false });
+                return res.sendStatus(404);
             }
             return res.status(200).json(person);
         } catch (err) {
             // istanbul ignore next
-            return res.status(500).json({ success: false });
+            return res.status(500).json(err);
         }
     }
 
@@ -79,6 +79,10 @@ class PeopleController {
     async createPerson(req, res) {
         try {
             const { name, gender, dateOfBirth, maritalStatus } = req.body;
+
+            if (!name || !gender || !dateOfBirth || !maritalStatus) {
+                return res.sendStatus(400);
+            }
 
             const data = await db.People.create({
                 name,
@@ -102,7 +106,6 @@ class PeopleController {
     async updatePerson(req, res) {
         try {
             const { name, gender, dateOfBirth, maritalStatus } = req.body;
-
             const person = await db.People.findByPk(Number(req.params.id));
 
             if (!person) {
@@ -111,6 +114,15 @@ class PeopleController {
 
             if (!name || !gender || !dateOfBirth || !maritalStatus) {
                 return res.sendStatus(400);
+            }
+
+            if (
+                name == person.name &&
+                gender == person.gender &&
+                dateOfBirth == person.dateOfBirth &&
+                maritalStatus == person.maritalStatus
+            ) {
+                return res.sendStatus(404);
             }
 
             const data = {

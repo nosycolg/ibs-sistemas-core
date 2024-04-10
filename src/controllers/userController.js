@@ -12,7 +12,7 @@ class UserController {
             return res.json(users);
         } catch (err) {
             // istanbul ignore next
-            return res.status(500).json({ message: 'Aconteceu algo inesperado' });
+            return res.status(500).json(err);
         }
     }
 
@@ -26,13 +26,15 @@ class UserController {
             const user = await db.User.findOne({
                 where: { id: req.params.id },
             });
+
             if (user) {
                 return res.json(user);
             }
-            res.status(404).json({ message: 'Usuário não existe!' });
+
+            return res.sendStatus(404);
         } catch (err) {
             // istanbul ignore next
-            return res.status(500).json({ message: 'Aconteceu algo inesperado' });
+            return res.status(500).json(err);
         }
     }
 
@@ -44,7 +46,7 @@ class UserController {
     async updateUser(req, res) {
         try {
             if (!req.body.username || !req.body.password) {
-                return res.status(409).json({ message: 'Nome de usuário e senha em falta!' });
+                return res.sendStatus(409);
             }
 
             const { username, password } = req.body;
@@ -55,10 +57,10 @@ class UserController {
             const userExists = await db.User.findOne({ where: { username } });
 
             if (!user) {
-                return res.status(404).json({ message: 'Usuário inexistente!' });
+                return res.sendStatus(404);
             }
             if (userExists) {
-                return res.status(409).json({ message: 'Nome de usuário já existente!' });
+                return res.sendStatus(409);
             }
 
             const data = await user.update({
@@ -69,7 +71,7 @@ class UserController {
             return res.json(data);
         } catch (err) {
             // istanbul ignore next
-            return res.status(500).json({ message: 'Aconteceu algo inesperado' });
+            return res.status(500).json(err);
         }
     }
 
@@ -84,14 +86,16 @@ class UserController {
                 where: { id: req.params.id },
             });
             if (!user) {
-                return res.status(404).json({ message: 'Usuário inexistente!' });
+                // istanbul ignore next
+
+                return res.sendStatus(404);
             }
 
             await user.destroy();
             return res.json(user);
         } catch (err) {
             // istanbul ignore next
-            return res.status(500).json({ message: 'Aconteceu algo inesperado' });
+            return res.status(500).json(err);
         }
     }
 }

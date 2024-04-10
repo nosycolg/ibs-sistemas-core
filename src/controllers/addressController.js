@@ -61,9 +61,11 @@ class AddressController {
     async getAddressById(req, res) {
         try {
             const address = await db.Address.findByPk(Number(req.params.id));
+
             if (!address) {
-                return res.status(404).json({ success: false });
+                return res.sendStatus(404);
             }
+
             return res.status(200).json(address);
         } catch (err) {
             // istanbul ignore next
@@ -82,11 +84,11 @@ class AddressController {
             const person = await db.People.findOne({ where: { id: req.params.id } });
 
             if (!person) {
-                return res.status(404).send(console.log('Pessoa não existe!'));
+                return res.sendStatus(404);
             }
 
             if (!cep || !street || !streetNumber || !district || !city || !state || !country) {
-                return res.status(400).send({ message: 'Complete todas as fields' });
+                return res.sendStatus(400);
             }
 
             const address = await db.Address.create({
@@ -120,11 +122,11 @@ class AddressController {
             const address = await db.Address.findByPk(req.params.id);
 
             if (!address) {
-                return res.status(404).send({ message: 'Endereço não existe' });
+                return res.sendStatus(404);
             }
 
             if (!cep || !street || !streetNumber || !district || !city || !state || !country) {
-                return res.status(400).send({ message: 'Complete todas as fields' });
+                return res.sendStatus(400);
             }
 
             if (
@@ -136,7 +138,7 @@ class AddressController {
                 state == address.state &&
                 country == address.country
             ) {
-                return res.status(404).send({ message: 'Dados não alterados' });
+                return res.sendStatus(404);
             }
 
             const data = {
@@ -171,7 +173,7 @@ class AddressController {
             });
 
             if (!address) {
-                return res.status(404).json({ message: 'Endereço não existe' });
+                return res.sendStatus(404);
             }
 
             address.destroy({});
