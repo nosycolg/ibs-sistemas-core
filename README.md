@@ -14,7 +14,7 @@ npm install
 ### How to run?
 
 ```bash
-make up && make logs
+make up
 ```
 
 ### How to run tests?
